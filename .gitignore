@@ -1,0 +1,19 @@
+# Python's precompiled files
+*.pyc
+*.pyo
+
+# Spyder files
+.spyder*
+
+# backup files
+*~
+
+# data
+*.zip
+*.data
+*.sql
+data/
+
+# linux hidden files
+.*
+!.gitignore
