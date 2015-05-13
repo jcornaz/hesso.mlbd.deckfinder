@@ -9,7 +9,7 @@ class Deck:
 	def __init__(self, isConstructed=True):
 		"""
 		Constructor
-		@param [bool] isConstructed If the deck is an constructed one or not
+		@param isConstructed [bool] If the deck is an constructed one or not
 		"""
 		self.isConstructed = isConstructed
 		self.__cards = {}
@@ -68,7 +68,6 @@ class Card:
 	"""
 	
 	def __init__(self, id, type, manacost, attack=0, heal=0, mechanics=[]):
-		
 		"""
 		Constructor
 		@param id [int] Unique ID of the card
