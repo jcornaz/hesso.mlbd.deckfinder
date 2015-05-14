@@ -74,7 +74,7 @@ class Deck:
 		
 		self.__nbCards += nbocc
 		
-		if card in self.__cards:
+		if card in self.__cards.keys():
 			self.__cards[card] += nbocc
 		else:
 			self.__cards[card] = nbocc
@@ -93,7 +93,7 @@ class Deck:
 	@property
 	def cardList(self):
 		res = []
-		for key in self.__cards:
+		for key in self.__cards.keys():
 			for i in range( self.__cards[key] ):
 				res.append(key)
 		return res
