@@ -1,5 +1,40 @@
 allcards = {}	# Dictionary of all the existing cards. The key is the id, and the value is the instance of the Card class
 
+class Types:
+  MINION = 1
+  SPELL  = 2
+  WEAPON = 3
+    
+class Mechanics:
+	TAUNT = 1
+	ONETURNEFFECT = 2
+	MORPH = 3
+	COMBO = 4
+	SUMMON = 5
+	SECRET = 6
+	CHARGE = 7
+	DEATHRATTLE = 8 
+	FREEZE = 9
+	AURA = 10
+	POISONOUS = 11
+	IMMUNETOSPELLPOWER = 12
+	SPELLPOWER = 13
+	BATTLECRY = 14
+	ADJACENTBUFF = 15
+	HEALTARGET = 16
+	DIVINESHIELD = 17
+	WINDFURY = 18 
+	ENRAGE = 19
+	AFFECTEDBYSPELLPOWER = 20
+	STEALTH = 21
+	SILENCE = 22
+	#TODO complete it when the DATABASE is updated
+	#ATTACKPLUS = 1
+	#DEALDAMAGE = 4
+	#DRAW = 6
+	#RANDOM = 7
+	#RETURN = 8
+
 class Deck:
 	"""
 	Representation of a deck. It can be constructed or not, complete or not and valid or not
@@ -89,7 +124,7 @@ class Card:
 	Representation of a card
 	"""
 	
-	def __init__(self, id, type, manacost, attack=0, heal=0, mechanics=[]):
+	def __init__(self, id, name, type, manacost, attack=0, heal=0, mechanics=[]):
 		"""
 		Constructor
 		@param id [int] Unique ID of the card
@@ -106,6 +141,7 @@ class Card:
 		self.attack = attack
 		self.heal = heal
 		self.mechanics = mechanics
+		self.name = name
 	
 	def __hash__(self):
 		return hash(self.id)
