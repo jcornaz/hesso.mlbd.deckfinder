@@ -6,15 +6,18 @@ class Deck:
 	Use the method addCard to define the content of the deck
 	"""
 	
-	def __init__(self, isConstructed=True):
+	def __init__(self):
 		"""
 		Constructor
-		@param [bool] isConstructed If the deck is an constructed one or not
 		"""
-		self.isConstructed = isConstructed
+		
 		self.__cards = {}
 		self.__nbCards = 0
 		self.__nboccMax = 0
+		self.nbConstructedMatches = 0
+		self.nbConstructedWins = 0
+		self.nbArenaMatches = 0
+		self.nbArenaWins = 0
 		
 	def addCard(self, card, nbocc=1):
 		"""
@@ -22,6 +25,7 @@ class Deck:
 		@param card [Card] Instance of the card to add
 		@param nbocc [int] Number of occurences of the card to add
 		"""
+		
 		self.__nbCards += nbocc
 		
 		if card in self.__cards:
@@ -53,8 +57,26 @@ class Deck:
 		return self.nbCards == 30
 	
 	@property
-	def isValid(self):
-		return self.isComplete and (not self.isConstructed or self.__nboccMax <= 2)
+	def isValidConstructed(self):
+		return self.isComplete and self.__nboccMax <= 2
+	
+	@property
+	def isValidArena(self):
+		return self.isComplete
+		
+	@property
+	def constructedWinRate(self):
+		if self.nbConstructedMatches > 0:
+			return self.nbConstructedWins / self.nbConstructedMatches
+		else:
+			return float('nan')
+	
+	@property
+	def arenaWinRate(self):
+		if self.nbArenaMatches > 0:
+			return self.nbArenaWins / self.nbArenaMatches
+		else:
+			return float('nan')
 	
 	def __hash__(self):
 		return hash(self.cards)
@@ -68,7 +90,6 @@ class Card:
 	"""
 	
 	def __init__(self, id, type, manacost, attack=0, heal=0, mechanics=[]):
-		
 		"""
 		Constructor
 		@param id [int] Unique ID of the card
@@ -78,6 +99,7 @@ class Card:
 		@param heal [int] Heal points (0 if not a minion)
 		@param mechanics [int] List of mechanics ids (can be empty)
 		"""
+		
 		self.id = id
 		self.type = type
 		self.manacost = manacost
