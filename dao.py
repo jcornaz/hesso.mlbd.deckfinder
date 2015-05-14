@@ -1,6 +1,7 @@
 import oursql
 import json
 import model
+import random
 from model import Deck
 from model import Card
 from model import Types
@@ -57,4 +58,11 @@ def aquireCardList():
 		return model.allcards
 			
 def aquireDeckList():
-	pass
+	res = []
+	cards = aquireCardList()
+	for i in range(100):
+		deck = Deck()
+		for j in range(30):
+			deck.addCard(cards[random.choice(cards.keys())])
+		res.append(deck)
+	return res
