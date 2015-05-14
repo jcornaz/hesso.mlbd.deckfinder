@@ -1,7 +1,6 @@
 import oursql
 import json
 import model
-import random
 from model import Deck
 from model import Card
 from model import Types
@@ -27,7 +26,6 @@ def strCardTypeToEnum(strType):
 	
 def aquireCardList():
 	con = connect()
-	
 	with con:
 		cur = con.cursor(oursql.DictCursor)
 		
@@ -48,21 +46,22 @@ def aquireCardList():
 				row['card_id'] = [row['mechanic_id']]
 				
 		print "processing aquired cards..."
-		model.allcards = {}
+		cards = {}
 		for row in cardsRows:
-			card = Card(row['id'],row['name'],strCardTypeToEnum(row['type_name']),row['rarity_id'],row['mana'],row['attack'],row['health'])
+			card = Card(row['id'],row['name'],strCardTypeToEnum(row['type_name']),not row['klass_id'] is None,row['mana'],row['attack'],row['health'])
 			if card.id in mechanics:
 				card.mechanics = mechanics[card.id]
-			model.allcards[card.id] = card
+			cards[card.id] = card
 		
-		return model.allcards
+		return cards
 			
-def aquireDeckList():
-	res = []
-	cards = aquireCardList()
-	for i in range(100):
-		deck = Deck()
-		for j in range(30):
-			deck.addCard(cards[random.choice(cards.keys())])
-		res.append(deck)
-	return res
+def aquireDeckList(cards={}):
+	if not cards:
+		cards = aquireCardList()
+	
+	con = connect()
+	with con:
+		cur = con.cursor(oursql.DictCursor)
+		
+		print "aquiring decks..."
+		cur.execute( "SELECT * FROM decks WHERE cardstring != ''")
