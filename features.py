@@ -2,6 +2,9 @@
 import model as md
 import dao as da
 
+reload(da)
+reload(md)
+
 def exfe_composition_deck(deck,all_cards):
 	result = {}
 	
@@ -40,7 +43,7 @@ def exfe_mechanics(deck):
 def exfe_type(deck,type):
 	val = 0
 	for card in deck.cardList:
-		if type in card.type:
+		if type == card.type:
 			val += 1
 			
 	return val
@@ -54,78 +57,35 @@ def exfe_types(deck):
 	
 	return result
 	
-#TODO lambda ??
-def exfe_distri(deck):
-	 exfe_distri_general(deck,lambda card: true,lambda card: card.manacost,7)
-	 exfe_distri_general(deck,lambda card: card.type == md.Types.SPELL,lambda card: card.attack,7)
-	 exfe_distri_general(deck,lambda card: card.type != md.Types.MINION,lambda card: card.health,7)
-	 
-	 
+	
 def exfe_distri_general(deck,check,attribut,MAXMANA=7):
 	result = []
-	for i in range(MAXMANA):
+	for i in range(MAXMANA+1):
 		result.append(0)
 		
 	for card in deck.cardList:
 		if(check(card)):
-			pass
+			continue
 		cost = attribut(card)
 		if cost>MAXMANA:
 			cost = MAXMANA
-		result[card] += 1
-		
-	return result
-	
-def exfe_distri_mana(deck,MAXMANA=7):
-	result = []
-	for i in range(MAXMANA):
-		result.append(0)
-		
-	for card in deck.cardList:
-	
-		cost = card.manacost
-		if cost>MAXMANA:
-			cost = MAXMANA
-		result[card] += 1
-		
-	return result
-	
-	
-def exfe_distri_attack(deck,MAXATTACK=7):
-	result = []
-	for i in range(MAXATTACK):
-		result.append(0)
-		
-		
-	for card in deck.cardList:
-		if card.type == md.Types.SPELL:
-			pass
-		cost = card.attack
-		if cost>MAXATTACK:
-			cost = MAXATTACK
-		result[card] += 1
-		
-	return result
-	
-def exfe_distri_health(deck,MAXHEALTH=7):
-	result = []
-	for i in range(MAXHEALTH):
-		result.append(0)
-		
-	for card in deck.cardList:
-		if card.type != md.Types.MINION:
-			pass
-		cost = card.health
-		if cost>MAXHEALTH:
-			cost = MAXHEALTH
-		result[card] += 1
+		result[cost] += 1
 		
 	return result
 
+def exfe_distri(deck):
+	result = []
+	
+	result.extend(exfe_distri_general(deck,lambda card: False,lambda card: card.manacost,7))
+	result.extend(exfe_distri_general(deck,lambda card: card.type == md.Types.SPELL,lambda card: card.attack,7))
+	result.extend(exfe_distri_general(deck,lambda card: card.type != md.Types.MINION,lambda card: card.health,7))
+	
+	return result
+	 
 def exfe_winrates(deck):
 	result = []
-	result.append(deck.constructedWinRate())
-	#result.append(deck.arenaWinRate())
+	result.append(deck.constructedWinRate)
+	#result.append(deck.arenaWinRate)
 	return result
 
 def exfe_decks(decks=[]):
@@ -143,9 +103,7 @@ def exfe_deck(deck):
 	result.extend(exfe_composition_deck(deck,da.aquireCardList()))
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
-	result.extend(exfe_distri_mana(deck))#TODO use generalize ?
-	result.extend(exfe_distri_attack(deck))#TODO use generalize ?
-	result.extend(exfe_distri_health(deck))#TODO use generalize ?
+	result.extend(exfe_distri(deck))
 	result.extend(exfe_winrates(deck))
 	
 	#return "list features"
@@ -153,6 +111,6 @@ def exfe_deck(deck):
 	
 #DEBUG
 decks = da.aquireDeckList()
-exfe_decks(decks)
+exfe_deck(decks[0])
 
 	
