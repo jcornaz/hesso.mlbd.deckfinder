@@ -1,10 +1,6 @@
 #!/usr/bin/python
 import model as md
 
-toto = md.Card(1,2,3)
-
-print()
-
 def exfe_composition_deck(deck,all_cards):
 	result = {}
 	
@@ -26,20 +22,17 @@ def exfe_mec_general(deck,mechanic):
 			
 	return val
 	
-def exfe_mec(deck):
+def exfe_mechanics(deck):
 	result = []
 	
-	result.append(exfe_mec_general(deck,M_ATTACKPLUS))
-	result.append(exfe_mec_general(deck,BATTLECRY))
-	result.append(exfe_mec_general(deck,CHARGE))
-	result.append(exfe_mec_general(deck,DEALDAMAGE))
-	result.append(exfe_mec_general(deck,DEATHRATTLE))
-	result.append(exfe_mec_general(deck,DRAW))
-	result.append(exfe_mec_general(deck,RANDOM))
-	result.append(exfe_mec_general(deck,RETURN))
-	result.append(exfe_mec_general(deck,SECRET))
-	result.append(exfe_mec_general(deck,SILENCE))
-	result.append(exfe_mec_general(deck,SUMMON))
+	#TODO add more mechanics
+	result.append(exfe_mec_general(deck,md.Mechanics.TAUNT))
+	result.append(exfe_mec_general(deck,md.Mechanics.ONETURNEFFECT))
+	result.append(exfe_mec_general(deck,md.Mechanics.MORPH))
+	result.append(exfe_mec_general(deck,md.Mechanics.COMBO))
+	result.append(exfe_mec_general(deck,md.Mechanics.SUMMON))
+	result.append(exfe_mec_general(deck,md.Mechanics.SECRET))
+	result.append(exfe_mec_general(deck,md.Mechanics.CHARGE))
 	
 	return result
 	
@@ -54,27 +47,106 @@ def exfe_type(deck,type):
 def exfe_types(deck):
 	result = []
 	
-	result.append(exfe_type(deck,MINION))
-	result.append(exfe_type(deck,SPELL))
-	result.append(exfe_type(deck,WEAPON))
+	result.append(exfe_type(deck,md.Types.MINION))
+	result.append(exfe_type(deck,md.Types.SPELL))
+	result.append(exfe_type(deck,md.Types.WEAPON))
 	
 	return result
 	
-def exfe_distri_mana(deck):
-	pass
+#TODO lambda ??
+def exfe_distri(deck):
+	 exfe_distri_general(deck,lambda card: true,lambda card: card.manacost,7)
+	 exfe_distri_general(deck,lambda card: card.type == md.Types.SPELL,lambda card: card.attack,7)
+	 exfe_distri_general(deck,lambda card: card.type != md.Types.MINION,lambda card: card.health,7)
+	 
+	 
+def exfe_distri_general(deck,check,attribut,MAXMANA=7):
+	result = []
+	for i in range(MAXMANA):
+		result.append(0)
+		
+	for card in deck.cardList():
+		if(check(card)):
+			pass
+		cost = attribut(card)
+		if cost>MAXMANA:
+			cost = MAXMANA
+		result[card] += 1
+		
+	return result
 	
-def exfe_distri_attack(deck):
-	pass
+def exfe_distri_mana(deck,MAXMANA=7):
+	result = []
+	for i in range(MAXMANA):
+		result.append(0)
+		
+	for card in deck.cardList():
 	
-def exfe_distri_health(deck):
-	pass
+		cost = card.manacost
+		if cost>MAXMANA:
+			cost = MAXMANA
+		result[card] += 1
+		
+	return result
+	
+	
+def exfe_distri_attack(deck,MAXATTACK=7):
+	result = []
+	for i in range(MAXATTACK):
+		result.append(0)
+		
+		
+	for card in deck.cardList():
+		if card.type == md.Types.SPELL:
+			pass
+		cost = card.attack
+		if cost>MAXATTACK:
+			cost = MAXATTACK
+		result[card] += 1
+		
+	return result
+	
+def exfe_distri_health(deck,MAXHEALTH=7):
+	result = []
+	for i in range(MAXHEALTH):
+		result.append(0)
+		
+	for card in deck.cardList():
+		if card.type != md.Types.MINION:
+			pass
+		cost = card.health
+		if cost>MAXHEALTH:
+			cost = MAXHEALTH
+		result[card] += 1
+		
+	return result
 
 def exfe_winrates(deck):
-	pass
+	result = []
+	result.append(deck.constructedWinRate())
+	#result.append(deck.arenaWinRate())
+	return result
 
 def exfe_decks(decks=[]):
-	return "matrix"
+	results = []
+	
+	for deck in decks:
+		results.append(exfe_deck(deck))
+		
+	#return "matrix"
+	return results
 	
 def exfe_deck(deck):
-	return "list features"
+	result = []
+	
+	result.extend(exfe_composition_deck(deck,md.allcards))
+	result.extend(exfe_mechanics(deck))
+	result.extend(exfe_types(deck))
+	result.extend(exfe_distri_mana(deck))#TODO use generalize ?
+	result.extend(exfe_distri_attack(deck))#TODO use generalize ?
+	result.extend(exfe_distri_health(deck))#TODO use generalize ?
+	result.extend(exfe_winrates(deck))
+	
+	#return "list features"
+	return result
 	
