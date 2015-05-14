@@ -1,6 +1,7 @@
 import oursql
 import json
 import model
+import random
 from model import Deck
 from model import Card
 from model import Types
@@ -56,12 +57,11 @@ def aquireCardList():
 		return cards
 			
 def aquireDeckList(cards={}):
-	if not cards:
-		cards = aquireCardList()
-	
-	con = connect()
-	with con:
-		cur = con.cursor(oursql.DictCursor)
-		
-		print "aquiring decks..."
-		cur.execute( "SELECT * FROM decks WHERE cardstring != ''")
+	res = []
+	cards = aquireCardList()
+	for i in range(100):
+		deck = Deck(random.choice(range(1,9)))
+		for j in range(30):
+			deck.addCard(cards[random.choice(cards.keys())])
+		res.append(deck)
+	return res
