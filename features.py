@@ -1,13 +1,14 @@
 #!/usr/bin/python
 import model as md
+import dao as da
 
 def exfe_composition_deck(deck,all_cards):
 	result = {}
 	
 	for key in all_cards:
 		result[key] = 0
-	
-	for v in deck.cardList():
+		
+	for v in deck.cardList:
 		result[v.id] += 1 
 	
 	#return dictionary of all cards, key=cardID value=count
@@ -16,7 +17,7 @@ def exfe_composition_deck(deck,all_cards):
 #TODO simplify this for loop and if (for all mec funcs)
 def exfe_mec_general(deck,mechanic):
 	val = 0
-	for card in deck.cardList():
+	for card in deck.cardList:
 		if mechanic in card.mechanics:
 			val += 1
 			
@@ -38,7 +39,7 @@ def exfe_mechanics(deck):
 	
 def exfe_type(deck,type):
 	val = 0
-	for card in deck.cardList():
+	for card in deck.cardList:
 		if type in card.type:
 			val += 1
 			
@@ -65,7 +66,7 @@ def exfe_distri_general(deck,check,attribut,MAXMANA=7):
 	for i in range(MAXMANA):
 		result.append(0)
 		
-	for card in deck.cardList():
+	for card in deck.cardList:
 		if(check(card)):
 			pass
 		cost = attribut(card)
@@ -80,7 +81,7 @@ def exfe_distri_mana(deck,MAXMANA=7):
 	for i in range(MAXMANA):
 		result.append(0)
 		
-	for card in deck.cardList():
+	for card in deck.cardList:
 	
 		cost = card.manacost
 		if cost>MAXMANA:
@@ -96,7 +97,7 @@ def exfe_distri_attack(deck,MAXATTACK=7):
 		result.append(0)
 		
 		
-	for card in deck.cardList():
+	for card in deck.cardList:
 		if card.type == md.Types.SPELL:
 			pass
 		cost = card.attack
@@ -111,7 +112,7 @@ def exfe_distri_health(deck,MAXHEALTH=7):
 	for i in range(MAXHEALTH):
 		result.append(0)
 		
-	for card in deck.cardList():
+	for card in deck.cardList:
 		if card.type != md.Types.MINION:
 			pass
 		cost = card.health
@@ -139,7 +140,7 @@ def exfe_decks(decks=[]):
 def exfe_deck(deck):
 	result = []
 	
-	result.extend(exfe_composition_deck(deck,md.allcards))
+	result.extend(exfe_composition_deck(deck,da.aquireCardList()))
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
 	result.extend(exfe_distri_mana(deck))#TODO use generalize ?
@@ -149,4 +150,9 @@ def exfe_deck(deck):
 	
 	#return "list features"
 	return result
+	
+#DEBUG
+decks = da.aquireDeckList()
+exfe_decks(decks)
+
 	
