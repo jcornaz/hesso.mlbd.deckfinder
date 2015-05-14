@@ -124,7 +124,7 @@ class Card:
 	Representation of a card
 	"""
 	
-	def __init__(self, id, name, type, manacost, attack=0, health=0, mechanics=[]):
+	def __init__(self, id, name, cardType, rarity, manacost, attack=0, health=0, mechanics=[]):
 		"""
 		Constructor
 		@param id [int] Unique ID of the card
@@ -136,7 +136,8 @@ class Card:
 		"""
 		
 		self.id = id
-		self.type = type
+		self.cardType = cardType
+		self.rarity = rarity
 		self.manacost = manacost
 		self.attack = attack
 		self.health = health
