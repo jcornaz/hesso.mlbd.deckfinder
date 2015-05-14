@@ -1,5 +1,3 @@
-allcards = {}	# Dictionary of all the existing cards. The key is the id, and the value is the instance of the Card class
-
 class Types:
   MINION = 1
   SPELL  = 2
@@ -35,17 +33,30 @@ class Mechanics:
 	#RANDOM = 7
 	#RETURN = 8
 
+class Classes:
+	DRUID = 1
+	HUNTER = 2
+	MAGE = 3
+	PALADIN = 4
+	PRIEST = 5
+	ROGUE = 6
+	SHAMAN = 7
+	WARLOCK = 8
+	WARRIOR = 9
+	
 class Deck:
 	"""
 	Representation of a deck. It can be constructed or not, complete or not and valid or not
 	Use the method addCard to define the content of the deck
 	"""
 	
-	def __init__(self):
+	def __init__(self,klass):
 		"""
 		Constructor
+		@param klass Class of the deck
 		"""
 		
+		self.__klass = klass
 		self.__cards = {}
 		self.__nbCards = 0
 		self.__nboccMax = 0
@@ -70,7 +81,11 @@ class Deck:
 			
 		if self.__cards[card] > self.__nboccMax :
 			self.__nboccMax = self.__cards[card]
-			
+		
+	@property
+	def klass(self):
+		return self.__klass
+		
 	@property
 	def cardsMap(self):
 		return self.__cards
@@ -124,11 +139,14 @@ class Card:
 	Representation of a card
 	"""
 	
-	def __init__(self, id, name, cardType, rarity, manacost, attack=0, health=0, mechanics=[]):
+	def __init__(self, id, name, type, rarity, isClassCard, manacost, attack=0, health=0, mechanics=[]):
 		"""
 		Constructor
 		@param id [int] Unique ID of the card
-		@param type [int] Type of the card
+		@param name [string] Name of the card
+		@param cardType [int] Type of the card
+		@param rarity [int] Rarity of the card
+		@param isClassCard [bool] If it's a card of class or not
 		@param manacost [int] Mana cost of the card
 		@param attack [int] Attack (0 if not a minion)
 		@param heal [int] Heal points (0 if not a minion)
@@ -136,13 +154,14 @@ class Card:
 		"""
 		
 		self.id = id
-		self.cardType = cardType
+		self.name = name
+		self.type = type
 		self.rarity = rarity
+		self.isClassCard = isClassCard
 		self.manacost = manacost
 		self.attack = attack
 		self.health = health
 		self.mechanics = mechanics
-		self.name = name
 	
 	def __hash__(self):
 		return hash(self.id)
