@@ -2,8 +2,8 @@
 import model as md
 import dao
 
-reload(dao)
 reload(md)
+reload(dao)
 
 class Composition:
 	def __init__(self, cards):
@@ -110,11 +110,15 @@ def exfe_deck(deck,comp):
 	result.extend(exfe_distri(deck))
 	result.extend(exfe_winrates(deck))
 	
-	#return "list features"
 	return result
 	
 #DEBUG
 with dao.Dao() as da:
 	cards = da.aquireCardList()
 	decks = da.aquireDeckList()
-	print exfe_deck(decks[42],Composition(cards))
+
+print "extracting features..."
+comp = Composition(cards)
+features = map(lambda deck: exfe_deck(deck, comp), filter(lambda deck: deck.isValidConstructed, decks))
+print "features extracted for " + str(len(features))
+print features[42]
