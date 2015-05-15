@@ -12,8 +12,12 @@
 *.zip
 *.data
 *.sql
+*.dat
 data/
 
 # linux hidden files
 .*
 !.gitignore
+
+# Confidential informations
+db_credentials.json
