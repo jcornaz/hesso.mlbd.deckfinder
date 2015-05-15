@@ -113,4 +113,4 @@ def exfe_deck(deck,cards):
 with dao.Dao() as da:
 	cards = da.aquireCardList()
 	decks = da.aquireDeckList()
-	exfe_deck(decks[0])
+	print exfe_deck(decks[42],cards)
