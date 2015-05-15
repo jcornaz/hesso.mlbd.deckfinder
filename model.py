@@ -81,7 +81,7 @@ class Deck:
 		
 		self.__nbCards += nbocc
 		
-		if card in self.__cards.keys():
+		if card in self.__cards:
 			self.__cards[card] += nbocc
 		else:
 			self.__cards[card] = nbocc
