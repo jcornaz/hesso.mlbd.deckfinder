@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import model as md
-import dao as da
+import dao
 
-reload(da)
+reload(dao)
 reload(md)
 
 def exfe_composition_deck(deck,all_cards):
@@ -97,10 +97,10 @@ def exfe_decks(decks=[]):
 	#return "matrix"
 	return results
 	
-def exfe_deck(deck):
+def exfe_deck(deck,cards):
 	result = []
 	
-	result.extend(exfe_composition_deck(deck,da.aquireCardList()))
+	result.extend(exfe_composition_deck(deck,cards))
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
 	result.extend(exfe_distri(deck))
@@ -110,7 +110,7 @@ def exfe_deck(deck):
 	return result
 	
 #DEBUG
-decks = da.aquireDeckList()
-exfe_deck(decks[0])
-
-	
+with dao.Dao() as da:
+	cards = da.aquireCardList()
+	decks = da.aquireDeckList()
+	exfe_deck(decks[0])
