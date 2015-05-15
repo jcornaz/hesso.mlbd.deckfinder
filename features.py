@@ -11,7 +11,7 @@ def exfe_composition_deck(deck,all_cards):
 	for key in all_cards:
 		result[key] = 0
 		
-	for v in deck.cardList:
+	for v in deck.cardsList:
 		result[v.id] += 1 
 	
 	#return dictionary of all cards, key=cardID value=count
@@ -20,7 +20,7 @@ def exfe_composition_deck(deck,all_cards):
 #TODO simplify this for loop and if (for all mec funcs)
 def exfe_mec_general(deck,mechanic):
 	val = 0
-	for card in deck.cardList:
+	for card in deck.cardsList:
 		if mechanic in card.mechanics:
 			val += 1
 			
@@ -42,7 +42,7 @@ def exfe_mechanics(deck):
 	
 def exfe_type(deck,type):
 	val = 0
-	for card in deck.cardList:
+	for card in deck.cardsList:
 		if type == card.type:
 			val += 1
 			
@@ -63,7 +63,7 @@ def exfe_distri_general(deck,check,attribut,MAXMANA=7):
 	for i in range(MAXMANA+1):
 		result.append(0)
 		
-	for card in deck.cardList:
+	for card in deck.cardsList:
 		if(check(card)):
 			continue
 		cost = attribut(card)
