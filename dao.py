@@ -55,7 +55,7 @@ class Dao:
 			v = string.split(strv,'_')
 			cardid = int(v[0])
 			nbocc = int(v[1])
-			if cardid in self.cards.keys():
+			if cardid in self.cards:
 				res[self.cards[cardid]] = nbocc
 		
 		return res
@@ -99,7 +99,7 @@ class Dao:
 		
 		return self.cards
 	
-	def aquireResults(self,modes=[Modes.ARENA, Modes.RANKED, Modes.CASUAL, Modes.FRIENDLY]):
+	def aquireResults(self,modes=[Modes.RANKED, Modes.CASUAL]):
 		print "aquiring matches victories counts from database..."
 		rows = self.execute( "SELECT d.cardstring, m.mode_id, count(m.id) FROM matches m, match_decks md, decks d WHERE m.id = md.match_id AND d.id = md.deck_id AND d.unique_deck_id IS NOT NULL AND m.mode_id in (" + ','.join(map(str,modes)) + ") AND m.result_id = 1 AND d.cardstring REGEXP '^([0-9]+_[1-9],)*([0-9]+_[1-9])$' GROUP BY d.cardstring, m.mode_id" )
 		
@@ -114,7 +114,7 @@ class Dao:
 		
 		return arenaWins, constructedWins
 			
-	def aquireDeckList(self,modes=[Modes.ARENA, Modes.RANKED, Modes.CASUAL, Modes.FRIENDLY]):
+	def aquireDeckList(self,modes=[Modes.RANKED, Modes.CASUAL]):
 		if not self.cards:
 			self.aquireCardList()
 
@@ -131,7 +131,7 @@ class Dao:
 			print "processing aquired decks..."
 			self.decks = {}
 			for row in rows:
-				if row['cardstring'] in self.decks.keys():
+				if row['cardstring'] in self.decks:
 					deck = self.decks[row['cardstring']]
 				else:
 					deck = Deck(row['klass_id'])
@@ -140,11 +140,11 @@ class Dao:
 					
 				if row['mode_id'] == Modes.ARENA :
 					deck.nbArenaMatches += row['count(m.id)']
-					if row['cardstring'] in arenaWins.keys():
+					if row['cardstring'] in arenaWins:
 						deck.nbArenaWins += arenaWins[row['cardstring']]
 				else:
 					deck.nbConstructedMatches += row['count(m.id)']
-					if row['cardstring'] in constructedsWins.keys():
+					if row['cardstring'] in constructedsWins:
 						deck.nbConstructedWins += constructedsWins[row['cardstring']]
 			
 			print "dumping decks to file..."
