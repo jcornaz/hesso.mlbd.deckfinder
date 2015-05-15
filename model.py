@@ -43,6 +43,13 @@ class Classes:
 	SHAMAN = 7
 	WARLOCK = 8
 	WARRIOR = 9
+
+class Modes:
+	ARENA = 1
+	CASUAL = 2
+	RANKED = 3
+	FRIENDLY = 4
+	PRACTICE = 5
 	
 class Deck:
 	"""
@@ -81,7 +88,11 @@ class Deck:
 			
 		if self.__cards[card] > self.__nboccMax :
 			self.__nboccMax = self.__cards[card]
-		
+	
+	def addAllCards(self, cardMap):
+		for card in cardMap.keys():
+			self.addCard(card, cardMap[card])
+			
 	@property
 	def klass(self):
 		return self.__klass

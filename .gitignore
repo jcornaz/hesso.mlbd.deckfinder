@@ -12,6 +12,7 @@
 *.zip
 *.data
 *.sql
+*.dat
 data/
 
 # linux hidden files
