@@ -89,9 +89,9 @@ class Deck:
 		if self.__cards[card] > self.__nboccMax :
 			self.__nboccMax = self.__cards[card]
 	
-	def addAllCards(self, cardMap):
-		for card in cardMap.keys():
-			self.addCard(card, cardMap[card])
+	def addAllCards(self, cardsMap):
+		for card in cardsMap.keys():
+			self.addCard(card, cardsMap[card])
 			
 	@property
 	def klass(self):
@@ -102,7 +102,7 @@ class Deck:
 		return self.__cards
 	
 	@property
-	def cardList(self):
+	def cardsList(self):
 		res = []
 		for key in self.__cards.keys():
 			for i in range( self.__cards[key] ):
