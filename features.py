@@ -5,18 +5,22 @@ import dao
 reload(dao)
 reload(md)
 
-def exfe_composition_deck(deck,all_cards):
-	result = {}
-	
-	for key in all_cards:
-		result[key] = 0
+class Composition:
+	def __init__(self, cards):
+		self.keys = sorted(list(cards.keys()))
+		self.nb = len(self.keys)
 		
-	for v in deck.cardsList:
-		result[v.id] += 1 
-	
-	#return dictionary of all cards, key=cardID value=count
-	return result
-	
+	def exfe(self, deck):
+		res = [0] * self.nb
+		cards = deck.cardsMap
+		for card in cards.keys():
+			try:
+				res[self.keys.index(card.id)] = cards[card]
+			except ValueError:
+				print "ERROR: card " + str(card.id) + " not found in the list (" + ', '.join(map(str,self.keys)) + ")"
+				
+		return res
+			
 #TODO simplify this for loop and if (for all mec funcs)
 def exfe_mec_general(deck,mechanic):
 	val = 0
@@ -97,10 +101,10 @@ def exfe_decks(decks=[]):
 	#return "matrix"
 	return results
 	
-def exfe_deck(deck,cards):
+def exfe_deck(deck,comp):
 	result = []
 	
-	result.extend(exfe_composition_deck(deck,cards))
+	result.extend(comp.exfe(deck))
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
 	result.extend(exfe_distri(deck))
@@ -113,4 +117,4 @@ def exfe_deck(deck,cards):
 with dao.Dao() as da:
 	cards = da.aquireCardList()
 	decks = da.aquireDeckList()
-	print exfe_deck(decks[42],cards)
+	print exfe_deck(decks[42],Composition(cards))
