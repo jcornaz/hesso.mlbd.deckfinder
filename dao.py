@@ -2,6 +2,7 @@ import oursql
 import json
 import string
 import os.path
+import pickle
 from model import Deck
 from model import Card
 from model import Types
