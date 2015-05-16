@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import model as md
 import dao
+from model import Mechanics
 
 reload(md)
 reload(dao)
@@ -29,26 +30,26 @@ def exfe_mec_general(deck,mechanic):
 			val += 1
 			
 	return val
-	
+
+#TODO add more mechanics
+MECHANICS = [Mechanics.TAUNT, Mechanics.ONETURNEFFECT, Mechanics.MORPH, Mechanics.COMBO, Mechanics.SUMMON, Mechanics.SECRET, Mechanics.CHARGE]
 def exfe_mechanics(deck):
-	result = []
 	
-	#TODO add more mechanics
-	result.append(exfe_mec_general(deck,md.Mechanics.TAUNT))
-	result.append(exfe_mec_general(deck,md.Mechanics.ONETURNEFFECT))
-	result.append(exfe_mec_general(deck,md.Mechanics.MORPH))
-	result.append(exfe_mec_general(deck,md.Mechanics.COMBO))
-	result.append(exfe_mec_general(deck,md.Mechanics.SUMMON))
-	result.append(exfe_mec_general(deck,md.Mechanics.SECRET))
-	result.append(exfe_mec_general(deck,md.Mechanics.CHARGE))
-	
+	result = [0] * len(MECHANICS)
+	occurrences = deck.cardsMap	
+	for card in occurrences.keys():
+		for mech in card.mechanics:
+			if mech in MECHANICS:
+				result[MECHANICS.index(mech)] += occurrences[card]
+		
 	return result
 	
 def exfe_type(deck,type):
 	val = 0
-	for card in deck.cardsList:
+	occurrences = deck.cardsMap
+	for card in occurrences.keys():
 		if type == card.type:
-			val += 1
+			val += occurrences[card]
 			
 	return val
 	
@@ -63,17 +64,16 @@ def exfe_types(deck):
 	
 	
 def exfe_distri_general(deck,check,attribut,MAXMANA=7):
-	result = []
-	for i in range(MAXMANA+1):
-		result.append(0)
-		
-	for card in deck.cardsList:
+	result = [0] * (MAXMANA + 1)
+
+	occurrences = 	deck.cardsMap
+	for card in occurrences.keys():
 		if(check(card)):
 			continue
 		cost = attribut(card)
 		if cost>MAXMANA:
 			cost = MAXMANA
-		result[cost] += 1
+		result[cost] += occurrences[card]
 		
 	return result
 
@@ -120,5 +120,5 @@ with dao.Dao() as da:
 print "extracting features..."
 comp = Composition(cards)
 features = map(lambda deck: exfe_deck(deck, comp), filter(lambda deck: deck.isValidConstructed, decks))
-print "features extracted for " + str(len(features))
+print "features extracted for " + str(len(features)) + " decks"
 print features[42]
