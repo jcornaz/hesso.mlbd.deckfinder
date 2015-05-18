@@ -3,12 +3,9 @@ import model as md
 import dao
 from model import Mechanics
 
-reload(md)
-reload(dao)
-
 class Composition:
 	def __init__(self, cards):
-		self.keys = sorted(list(cards.keys()))
+		self.keys = sorted(list([card.id for card in cards]))
 		self.nb = len(self.keys)
 		
 	def exfe(self, deck):
@@ -114,8 +111,8 @@ def exfe_deck(deck,comp):
 	
 #DEBUG
 with dao.Dao() as da:
-	cards = da.aquireCardList()
-	decks = da.aquireDeckList()
+	cards = da.cards
+	decks = da.decks
 
 print "extracting features..."
 comp = Composition(cards)
