@@ -106,7 +106,7 @@ class Deck:
 			occByID[card.id] = cardsMap[card]
 
 		ids = sorted(map(lambda card: card.id, cardsMap.keys()))
-		return map(lambda card: str(id) + '_' + str(occByID[id]), ids)
+		return ','.join(map(lambda id: str(id) + '_' + str(occByID[id]), ids))
 		
 	def cardstring(self):
 		return Deck.cardstringOfCardsMap(self.__cards)
