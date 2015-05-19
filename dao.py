@@ -26,7 +26,10 @@ class Dao:
 		
 	def __exit__(self, type, value, traceback):
 		if self.__con :
-			self.__con.close()
+			try:
+				self.__con.close()
+			except:
+				pass
 			self.__con = None
 		self.__isEntered = False
 		print "*** Disconnected from SQL server ***"
