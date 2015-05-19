@@ -97,7 +97,20 @@ class Deck:
 		
 		for card in cardsMap.keys():
 			self.addCard(card, cardsMap[card])
-			
+
+	@staticmethod
+	def cardstringOfCardsMap(cardsMap):
+		occByID = {}
+		
+		for card in cardsMap.keys():
+			occByID[card.id] = cardsMap[card]
+
+		ids = sorted(map(lambda card: card.id, cardsMap.keys()))
+		return map(lambda card: str(id) + '_' + str(occByID[id]), ids)
+		
+	def cardstring(self):
+		return Deck.cardstringOfCardsMap(self.__cards)
+		
 	@property
 	def klass(self):
 		return self.__klass

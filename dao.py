@@ -78,9 +78,7 @@ class Dao:
 			if cardid in self.__cards:
 				res[self.__cards[cardid]] = nbocc
 		
-		uniqueCardString = ','.join([str(card.id) + "_" + str(res[card]) for card in sorted(res.keys())])
-		
-		return res, uniqueCardString
+		return res
 				
 	def aquireMechanics(self):
 		print "aquiring mechanics from database..."
@@ -153,7 +151,8 @@ class Dao:
 			print "processing aquired decks..."
 			self.__decks = {}
 			for row in rows:
-				cards, uniqueCardString = self.parseCardstring(row['cardstring'])
+				cards = self.parseCardstring(row['cardstring'])
+				uniqueCardString = Deck.cardstringOfCardsMap(cards)
 				if uniqueCardString in self.__decks:
 					deck = self.__decks[uniqueCardString]
 				else:
