@@ -88,15 +88,6 @@ def exfe_winrates(deck):
 	result.append(deck.constructedWinRate)
 	#result.append(deck.arenaWinRate)
 	return result
-
-def exfe_decks(decks=[]):
-	results = []
-	
-	for deck in decks:
-		results.append(exfe_deck(deck))
-		
-	#return "matrix"
-	return results
 	
 def exfe_deck(deck,comp):
 	result = []
@@ -108,6 +99,16 @@ def exfe_deck(deck,comp):
 	result.extend(exfe_winrates(deck))
 	
 	return result
+
+def exfe_decks(decks,cards):
+	results = []
+	
+	comp = Composition(cards)
+	for deck in decks:
+		results.append(exfe_deck(deck,comp))
+		
+	#return "matrix"
+	return results
 	
 #DEBUG
 with dao.Dao() as da:
@@ -115,7 +116,6 @@ with dao.Dao() as da:
 	decks = da.decks
 
 print "extracting features..."
-comp = Composition(cards)
-features = map(lambda deck: exfe_deck(deck, comp), filter(lambda deck: deck.isValidConstructed, decks))
+features = exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards)
 print "features extracted for " + str(len(features)) + " decks"
 print features[42]

@@ -18,25 +18,29 @@ class Dao:
 		self.__cards = None
 		self.__decks = None
 		self.__con = None
+		self.__isEntered = False
 	
 	def __enter__(self):
-		with open(FILENAME_DB_CREDENTIALS) as cred_file:    
-		    db_cred = json.load(cred_file)
-
-		self.__con = oursql.connect(host=db_cred['host'], user=db_cred['username'], passwd=db_cred['password'], db=db_cred['schema'], port=db_cred['port'])
-		self.__cur = self.__con.cursor(oursql.DictCursor)
-		
-		print "*** Connected to SQL server ***"
-
+		self.__isEntered = True
 		return self
 		
 	def __exit__(self, type, value, traceback):
 		if self.__con :
 			self.__con.close()
 			self.__con = None
-			
+		self.__isEntered = False
 		print "*** Disconnected from SQL server ***"
 	
+	def connect(self):
+		if not self.__isEntered:
+			raise "use the with keyword on the Dao object to be able to connect to the SQL database"
+		else:	
+			with open(FILENAME_DB_CREDENTIALS) as cred_file:    
+			    db_cred = json.load(cred_file)
+			self.__con = oursql.connect(host=db_cred['host'], user=db_cred['username'], passwd=db_cred['password'], db=db_cred['schema'], port=db_cred['port'])
+			self.__cur = self.__con.cursor(oursql.DictCursor)
+			print "*** Connected to SQL server ***"
+		
 	@property
 	def decks(self):
 		if not self.__decks:
@@ -52,6 +56,8 @@ class Dao:
 			return utils.dictValues(self.__cards)
 			
 	def execute(self, query):
+		if not self.__con:
+			self.connect()
 		self.__cur.execute(query)
 		return self.__cur.fetchall()
 	
