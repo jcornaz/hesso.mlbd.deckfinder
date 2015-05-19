@@ -89,10 +89,28 @@ class Deck:
 		if self.__cards[card] > self.__nboccMax :
 			self.__nboccMax = self.__cards[card]
 	
-	def addAllCards(self, cardsMap):
+	def addCardsMap(self, cardsMap):
+		"""
+		Add a map of cards
+		@param cardsMap [dict<card,int>] Map of cards to add. The keys must be the instance of the card and the key, the number of occurences
+		"""
+		
 		for card in cardsMap.keys():
 			self.addCard(card, cardsMap[card])
-			
+
+	@staticmethod
+	def cardstringOfCardsMap(cardsMap):
+		occByID = {}
+		
+		for card in cardsMap.keys():
+			occByID[card.id] = cardsMap[card]
+
+		ids = sorted(map(lambda card: card.id, cardsMap.keys()))
+		return map(lambda card: str(id) + '_' + str(occByID[id]), ids)
+		
+	def cardstring(self):
+		return Deck.cardstringOfCardsMap(self.__cards)
+		
 	@property
 	def klass(self):
 		return self.__klass
