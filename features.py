@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import numpy as np
 import model as md
 import dao
 from model import Mechanics
@@ -13,21 +14,15 @@ class Composition:
 		cards = deck.cardsMap
 		for card in cards.keys():
 			try:
-				res[self.keys.index(card.id)] = cards[card]
+				res[self.keys.index(card.id)] = cards[card] / 2
 			except ValueError:
 				print "ERROR: card " + str(card.id) + " not found in the list (" + ', '.join(map(str,self.keys)) + ")"
 				
 		return res
-			
-#TODO simplify this for loop and if (for all mec funcs)
-def exfe_mec_general(deck,mechanic):
-	val = 0
-	for card in deck.cardsList:
-		if mechanic in card.mechanics:
-			val += 1
-			
-	return val
-
+	
+def normalize(values,vmin,vmax):
+	return [max(0,min(1,float(value-vmin)/float(vmax-vmin))) for value in values]
+	
 #TODO add more mechanics
 MECHANICS = [Mechanics.TAUNT, Mechanics.ONETURNEFFECT, Mechanics.MORPH, Mechanics.COMBO, Mechanics.SUMMON, Mechanics.SECRET, Mechanics.CHARGE]
 def exfe_mechanics(deck):
@@ -39,7 +34,7 @@ def exfe_mechanics(deck):
 			if mech in MECHANICS:
 				result[MECHANICS.index(mech)] += occurrences[card]
 		
-	return result
+	return normalize(result,0,15)
 	
 def exfe_type(deck,type):
 	val = 0
@@ -57,8 +52,7 @@ def exfe_types(deck):
 	result.append(exfe_type(deck,md.Types.SPELL))
 	result.append(exfe_type(deck,md.Types.WEAPON))
 	
-	return result
-	
+	return normalize(result,0,30)
 	
 def exfe_distri_general(deck,check,attribut,MAXMANA=7):
 	result = [0] * (MAXMANA + 1)
@@ -72,7 +66,7 @@ def exfe_distri_general(deck,check,attribut,MAXMANA=7):
 			cost = MAXMANA
 		result[cost] += occurrences[card]
 		
-	return result
+	return normalize(result,0,15)
 
 def exfe_distri(deck):
 	result = []
@@ -88,15 +82,6 @@ def exfe_winrates(deck):
 	result.append(deck.constructedWinRate)
 	#result.append(deck.arenaWinRate)
 	return result
-
-def exfe_decks(decks=[]):
-	results = []
-	
-	for deck in decks:
-		results.append(exfe_deck(deck))
-		
-	#return "matrix"
-	return results
 	
 def exfe_deck(deck,comp):
 	result = []
@@ -105,9 +90,18 @@ def exfe_deck(deck,comp):
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
 	result.extend(exfe_distri(deck))
-	result.extend(exfe_winrates(deck))
+	#result.extend(exfe_winrates(deck))
 	
 	return result
+
+def exfe_decks(decks,cards):
+	results = []
+	
+	comp = Composition(cards)
+	for deck in decks:
+		results.append(exfe_deck(deck,comp))
+	
+	return np.array(results)
 	
 #DEBUG
 with dao.Dao() as da:
@@ -115,7 +109,6 @@ with dao.Dao() as da:
 	decks = da.decks
 
 print "extracting features..."
-comp = Composition(cards)
-features = map(lambda deck: exfe_deck(deck, comp), filter(lambda deck: deck.isValidConstructed, decks))
+features = exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards)
 print "features extracted for " + str(len(features)) + " decks"
 print features[42]
