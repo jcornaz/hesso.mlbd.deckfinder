@@ -109,6 +109,6 @@ def load_dataset():
 		decks = da.decks
 
 	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards))
-	
-#DEBUG
-print load_dataset()[42]
+
+if __name__ == '__main__':
+	print load_dataset()[42]

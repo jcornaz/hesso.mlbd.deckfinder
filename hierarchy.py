@@ -9,6 +9,9 @@ LINKAGE_METHOD = 'centroid'
 def learn(dataset):
 	return hierarchy.linkage(pdist(dataset, DISTANCE_METRIC),LINKAGE_METHOD,DISTANCE_METRIC)
 
-#DEBUG
-dataset = utils.random_subset(features.load_dataset(), 100)
-hierarchy.dendrogram(learn(dataset))
+def main():	
+	dataset = utils.random_subset(features.load_dataset(), 100)
+	hierarchy.dendrogram(learn(dataset))
+	
+if __name__ == "__main__":
+	main()
