@@ -103,12 +103,12 @@ def exfe_decks(decks,cards):
 	
 	return np.array(results)
 	
-#DEBUG
-with dao.Dao() as da:
-	cards = da.cards
-	decks = da.decks
+def load_dataset():
+	with dao.Dao() as da:
+		cards = da.cards
+		decks = da.decks
 
-print "extracting features..."
-features = exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards)
-print "features extracted for " + str(len(features)) + " decks"
-print features[42]
+	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards))
+	
+#DEBUG
+print load_dataset()[42]
