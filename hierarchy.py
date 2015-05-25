@@ -4,7 +4,7 @@ from scipy.cluster import hierarchy
 from scipy.spatial.distance import pdist
 
 DISTANCE_METRIC = 'cosine'
-LINKAGE_METHOD = 'centroid'
+LINKAGE_METHOD = 'average'
 
 def learn(dataset):
 	return hierarchy.linkage(pdist(dataset, DISTANCE_METRIC),LINKAGE_METHOD,DISTANCE_METRIC)
