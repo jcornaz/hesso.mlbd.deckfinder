@@ -31,8 +31,9 @@ class Dao:
 			except:
 				pass
 			self.__con = None
+			print "*** Disconnected from SQL server ***"
+			
 		self.__isEntered = False
-		print "*** Disconnected from SQL server ***"
 	
 	def connect(self):
 		if not self.__isEntered:
