@@ -1,6 +1,5 @@
 import features
-import dao
-import numpy as np
+import utils
 from scipy.cluster import hierarchy
 from scipy.spatial.distance import pdist
 
@@ -11,10 +10,5 @@ def learn(dataset):
 	return hierarchy.linkage(pdist(dataset, DISTANCE_METRIC),LINKAGE_METHOD,DISTANCE_METRIC)
 
 #DEBUG
-with dao.Dao() as da:
-	cards = da.cards
-	decks = da.decks
-
-dataset = np.array(features.exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards))
-
+dataset = utils.random_subset(features.load_dataset(), 100)
 hierarchy.dendrogram(learn(dataset))
