@@ -54,16 +54,35 @@ def exfe_types(deck):
 	
 	return normalize(result,0,30)
 	
-def exfe_distri_general(deck,check,attribut,MAXMANA=7):
-	result = [0] * (MAXMANA + 1)
+def exfe_count_range(deck,attribut,split_tab):
+	result = [0] * (len(split_tab) + 1)
+	
+	for card,occ in deck.cardsMap.iteritems():
+		cost = attribut(card)
+		for idx,v in enumerate(split_tab):
+			if cost <= v:
+				result[idx] += occ
+				break
+			elif idx+1 == len(split_tab):
+				result[idx+1] += occ
 
-	occurrences = 	deck.cardsMap
+	return normalize(result,0,deck.nbCards)
+	
+def exfe_distri_range(deck):
+	return	exfe_count_range(deck,lambda card: card.manacost,[3,6])
+	
+def exfe_distri_general(deck,check,attribut,MINIMANA=0,MAXMANA=7):
+	result = [0] * ((MAXMANA-MINIMANA) + 1)
+
+	occurrences = deck.cardsMap
 	for card in occurrences.keys():
 		if(check(card)):
 			continue
 		cost = attribut(card)
 		if cost>MAXMANA:
 			cost = MAXMANA
+		elif cost<MINIMANA:
+			cost = MINIMANA
 		result[cost] += occurrences[card]
 		
 	return normalize(result,0,15)
@@ -71,9 +90,9 @@ def exfe_distri_general(deck,check,attribut,MAXMANA=7):
 def exfe_distri(deck):
 	result = []
 	
-	result.extend(exfe_distri_general(deck,lambda card: False,lambda card: card.manacost,7))
-	result.extend(exfe_distri_general(deck,lambda card: card.type == md.Types.SPELL,lambda card: card.attack,7))
-	result.extend(exfe_distri_general(deck,lambda card: card.type != md.Types.MINION,lambda card: card.health,7))
+	result.extend(exfe_distri_general(deck,lambda card: False,lambda card: card.manacost,0,7))
+	result.extend(exfe_distri_general(deck,lambda card: card.type == md.Types.SPELL,lambda card: card.attack,0,7))
+	result.extend(exfe_distri_general(deck,lambda card: card.type != md.Types.MINION,lambda card: card.health,0,7))
 	
 	return result
 	 
@@ -90,6 +109,7 @@ def exfe_deck(deck,comp):
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
 	result.extend(exfe_distri(deck))
+	result.extend(exfe_distri_range(deck))
 	#result.extend(exfe_winrates(deck))
 	
 	return result
@@ -111,4 +131,5 @@ def load_dataset():
 	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards))
 	
 #DEBUG
-print load_dataset()[42]
+if __name__ == "__main__":
+	print load_dataset()[400]
