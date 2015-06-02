@@ -108,7 +108,7 @@ class Dao:
 		if os.path.isfile(FILENAME_CARDS_LIST):
 			print "loading cards from file..."
 			with open(FILENAME_CARDS_LIST) as file:
-				self.__cards = pickle.load(file,pickle.HIGHEST_PROTOCOL)
+				self.__cards = pickle.load(file)
 		else:
 			mechanics = self.aquireMechanics()
 			
@@ -151,7 +151,7 @@ class Dao:
 		if os.path.isfile(FILENAME_DECKS_LIST):
 			print "loading decks from file..."
 			with open(FILENAME_DECKS_LIST) as file:
-				self.__decks = pickle.load(file,pickle.HIGHEST_PROTOCOL)
+				self.__decks = pickle.load(file)
 		else:
 			arenaWins, constructedsWins = self.aquireResults(modes)
 			
