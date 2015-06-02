@@ -13,7 +13,7 @@ def learn(dataset,epsvalue):
 	return labels, nblabels, core_samples_mask
 	
 def main():
-	dataset = utils.random_subset(features.load_dataset(),10000)
+	dataset = utils.random_subset(features.load_dataset(),1000)
 
 	epsvalue = 0.1
 	print 'learning with eps=' + str(epsvalue) + '...'
