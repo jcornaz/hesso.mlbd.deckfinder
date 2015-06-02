@@ -5,12 +5,18 @@ def dictValues(dictionnary):
 	return [dictionnary[k] for k in dictionnary.keys()]
 	
 def random_subset( matrix, n ):
-	indexes = []
-	l,c = matrix.shape
-	res = np.zeros([n,c])
-	j = rnd.randint(0,l)
+	# Reservoir sampling algorithm
+
+	nbrow,nbcol = matrix.shape
+	res = np.empty([n,nbcol])
+	
 	for i in range(n):
-		while j in indexes:
-			j = rnd.randint(0,l)
-		res[i,:] = matrix[j,:]
+		res[i,:] = matrix[i,:]
+	
+	for i in range(n,nbrow):
+		j = rnd.randint(0,i)
+		if j < n:
+			res[j,:] = matrix[i,:]
+	
 	return res
+			
