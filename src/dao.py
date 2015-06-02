@@ -9,9 +9,9 @@ from model import Card
 from model import Types
 from model import Modes
 
-FILENAME_DB_CREDENTIALS = 'db_credentials.json'
-FILENAME_CARDS_LIST = 'cards_list.dat'
-FILENAME_DECKS_LIST = 'decks_list.dat'
+FILENAME_DB_CREDENTIALS = '../db_credentials.json'
+FILENAME_CARDS_LIST = '../data/cards_list.dat'
+FILENAME_DECKS_LIST = '../data/decks_list.dat'
 
 class Dao:
 	def __init__(self):
@@ -97,7 +97,7 @@ class Dao:
 		print "processing aquired mechanics..."
 		mechanics = {}
 		for row in rows:
-			if row['card_id'] in row['card_id']:
+			if row['card_id'] in mechanics:
 				row['card_id'].append(row['mechanic_id'])
 			else:
 				row['card_id'] = [row['mechanic_id']]
@@ -108,7 +108,7 @@ class Dao:
 		if os.path.isfile(FILENAME_CARDS_LIST):
 			print "loading cards from file..."
 			with open(FILENAME_CARDS_LIST) as file:
-				self.__cards = pickle.load(file)
+				self.__cards = pickle.load(file,pickle.HIGHEST_PROTOCOL)
 		else:
 			mechanics = self.aquireMechanics()
 			
@@ -125,7 +125,7 @@ class Dao:
 			
 			print "dumping cards to file..."
 			with open(FILENAME_CARDS_LIST,'w') as file:
-				pickle.dump(self.__cards, file)
+				pickle.dump(self.__cards, file,pickle.HIGHEST_PROTOCOL)
 		
 		return utils.dictValues(self.__cards)
 	
@@ -151,7 +151,7 @@ class Dao:
 		if os.path.isfile(FILENAME_DECKS_LIST):
 			print "loading decks from file..."
 			with open(FILENAME_DECKS_LIST) as file:
-				self.__decks = pickle.load(file)
+				self.__decks = pickle.load(file,pickle.HIGHEST_PROTOCOL)
 		else:
 			arenaWins, constructedsWins = self.aquireResults(modes)
 			
@@ -181,6 +181,6 @@ class Dao:
 			
 			print "dumping decks to file..."
 			with open(FILENAME_DECKS_LIST,'w') as file:
-				pickle.dump(self.__decks, file)
+				pickle.dump(self.__decks, file,pickle.HIGHEST_PROTOCOL)
 				
 		return utils.dictValues(self.__decks)
