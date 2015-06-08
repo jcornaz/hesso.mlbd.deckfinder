@@ -131,7 +131,7 @@ class Dao:
 	
 	def aquireResults(self,modes=[Modes.RANKED, Modes.CASUAL]):
 		print "aquiring matches victories counts from database..."
-		rows = self.execute( "SELECT d.cardstring, m.mode_id, count(m.id) FROM matches m, match_decks md, decks d WHERE m.id = md.match_id AND d.id = md.deck_id AND d.unique_deck_id IS NOT NULL AND m.mode_id in (" + ','.join(map(str,modes)) + ") AND m.result_id = 1 AND d.cardstring REGEXP '^([0-9]+_[1-9],)*([0-9]+_[1-9])$' GROUP BY d.cardstring, m.mode_id" )
+		rows = self.execute( "SELECT d.cardstring, m.mode_id, count(m.id) FROM matches m, match_decks md, decks d WHERE m.id = md.match_id AND d.id = md.deck_id AND d.klass_id IS NOT NULL AND d.klass_id > 0 AND d.unique_deck_id IS NOT NULL AND m.mode_id in (" + ','.join(map(str,modes)) + ") AND m.result_id = 1 AND d.cardstring REGEXP '^([0-9]+_[1-9],)*([0-9]+_[1-9])$' GROUP BY d.cardstring, m.mode_id" )
 		
 		print "processing aquired results..."
 		arenaWins = {}
@@ -156,7 +156,7 @@ class Dao:
 			arenaWins, constructedsWins = self.aquireResults(modes)
 			
 			print "aquiring decks from database..."
-			rows = self.execute("SELECT d.cardstring, d.klass_id, m.mode_id, count(m.id) FROM matches m, match_decks md, decks d WHERE m.id = md.match_id AND d.id = md.deck_id AND d.unique_deck_id IS NOT NULL AND m.mode_id in (" + ','.join(map(str,modes)) + ") AND d.cardstring REGEXP '^([0-9]+_[1-9],)*([0-9]+_[1-9])$' GROUP BY d.cardstring, m.mode_id")
+			rows = self.execute("SELECT d.cardstring, d.klass_id, m.mode_id, count(m.id) FROM matches m, match_decks md, decks d WHERE m.id = md.match_id AND d.id = md.deck_id AND d.klass_id IS NOT NULL AND d.klass_id > 0 AND d.unique_deck_id IS NOT NULL AND m.mode_id in (" + ','.join(map(str,modes)) + ") AND d.cardstring REGEXP '^([0-9]+_[1-9],)*([0-9]+_[1-9])$' GROUP BY d.cardstring, m.mode_id")
 			
 			print "processing aquired decks..."
 			self.__decks = {}
@@ -184,3 +184,7 @@ class Dao:
 				pickle.dump(self.__decks, file,pickle.HIGHEST_PROTOCOL)
 				
 		return utils.dictValues(self.__decks)
+		
+if __name__ == "__main__":
+	with Dao() as da:
+		da.decks;
