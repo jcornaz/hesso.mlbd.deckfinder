@@ -15,14 +15,17 @@ def learn(dataset,epsvalue):
 	
 def main(args=[]):
 	dataset = features.load_dataset();
-	if len(args) > 1:
-		dataset = utils.random_subset(dataset,int(args[0]))
+	if len(args) > 0:
+		epsvalue = int(args[0])
+		if len(args) > 1:
+			dataset = utils.random_subset(dataset,int(args[1]))
+	else:
+		epsvalue = 1
 
-	epsvalue = 0.1
 	print 'learning with eps=' + str(epsvalue) + '...'
 	_, nblabels, _ = learn(dataset, epsvalue)
 	while nblabels <= 1:
-		epsvalue /= 2
+		epsvalue /= 2.0
 		print 'learning with eps=' + str(epsvalue) + '...'
 		_, nblabels, _ = learn(dataset, epsvalue)
 	
