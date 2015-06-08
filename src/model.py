@@ -2,6 +2,10 @@ class Types:
   MINION = 1
   SPELL  = 2
   WEAPON = 3
+  
+  NAMES = {'1':'MINION',
+  				 '2':'SPELL',
+  				 '3':'WEAPON',}
     
 class Mechanics:
 	TAUNT = 1
@@ -43,6 +47,16 @@ class Classes:
 	SHAMAN = 7
 	WARLOCK = 8
 	WARRIOR = 9
+	
+	NAMES = {'1':'DRUIDE',
+					 '2':'HUNTER',
+					 '3':'MAGE',
+					 '4':'PALADIN',
+					 '5':'PRIEST',
+					 '6':'ROGUE',
+					 '7':'SHAMAN',
+					 '8':'WARLOCK',
+					 '9':'WARRIOR',}
 
 class Modes:
 	ARENA = 1
@@ -81,7 +95,7 @@ class Deck:
 		
 		self.__nbCards += nbocc
 		
-		if card in self.__cards.keys():
+		if card in self.__cards:
 			self.__cards[card] += nbocc
 		else:
 			self.__cards[card] = nbocc
@@ -89,10 +103,28 @@ class Deck:
 		if self.__cards[card] > self.__nboccMax :
 			self.__nboccMax = self.__cards[card]
 	
-	def addAllCards(self, cardMap):
-		for card in cardMap.keys():
-			self.addCard(card, cardMap[card])
-			
+	def addCardsMap(self, cardsMap):
+		"""
+		Add a map of cards
+		@param cardsMap [dict<card,int>] Map of cards to add. The keys must be the instance of the card and the key, the number of occurences
+		"""
+		
+		for card in cardsMap.keys():
+			self.addCard(card, cardsMap[card])
+
+	@staticmethod
+	def cardstringOfCardsMap(cardsMap):
+		occByID = {}
+		
+		for card in cardsMap.keys():
+			occByID[card.id] = cardsMap[card]
+
+		ids = sorted(map(lambda card: card.id, cardsMap.keys()))
+		return ','.join(map(lambda id: str(id) + '_' + str(occByID[id]), ids))
+		
+	def cardstring(self):
+		return Deck.cardstringOfCardsMap(self.__cards)
+		
 	@property
 	def klass(self):
 		return self.__klass
@@ -102,7 +134,7 @@ class Deck:
 		return self.__cards
 	
 	@property
-	def cardList(self):
+	def cardsList(self):
 		res = []
 		for key in self.__cards.keys():
 			for i in range( self.__cards[key] ):
