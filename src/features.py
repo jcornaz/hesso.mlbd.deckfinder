@@ -2,6 +2,8 @@
 import numpy as np
 import model as md
 import dao
+import csv
+import random
 from model import Mechanics
 
 class Composition:
@@ -54,10 +56,12 @@ def exfe_types(deck):
 	
 	return normalize(result,0,30)
 	
-def exfe_count_range(deck,attribut,split_tab):
+def exfe_count_range(deck,check,attribut,split_tab):
 	result = [0] * (len(split_tab) + 1)
 	
 	for card,occ in deck.cardsMap.iteritems():
+		if(not check(card)):
+			continue
 		cost = attribut(card)
 		for idx,v in enumerate(split_tab):
 			if cost <= v:
@@ -69,14 +73,20 @@ def exfe_count_range(deck,attribut,split_tab):
 	return normalize(result,0,deck.nbCards)
 	
 def exfe_distri_range(deck):
-	return	exfe_count_range(deck,lambda card: card.manacost,[3,6])
+	result = []
+	
+	result.extend(exfe_count_range(deck,lambda card: True,lambda card: card.manacost,[3,6]))
+	result.extend(exfe_count_range(deck,lambda card: card.type != md.Types.SPELL,lambda card: card.attack,[3,6]))
+	result.extend(exfe_count_range(deck,lambda card: card.type == md.Types.MINION,lambda card: card.health,[3,6]))
+	
+	return result
 	
 def exfe_distri_general(deck,check,attribut,MINIMANA=0,MAXMANA=7):
 	result = [0] * ((MAXMANA-MINIMANA) + 1)
 
 	occurrences = deck.cardsMap
 	for card in occurrences.keys():
-		if(check(card)):
+		if(not check(card)):
 			continue
 		cost = attribut(card)
 		if cost>MAXMANA:
@@ -90,9 +100,9 @@ def exfe_distri_general(deck,check,attribut,MINIMANA=0,MAXMANA=7):
 def exfe_distri(deck):
 	result = []
 	
-	result.extend(exfe_distri_general(deck,lambda card: False,lambda card: card.manacost,0,7))
-	result.extend(exfe_distri_general(deck,lambda card: card.type == md.Types.SPELL,lambda card: card.attack,0,7))
-	result.extend(exfe_distri_general(deck,lambda card: card.type != md.Types.MINION,lambda card: card.health,0,7))
+	result.extend(exfe_distri_general(deck,lambda card: True,lambda card: card.manacost,0,7))
+	result.extend(exfe_distri_general(deck,lambda card: card.type != md.Types.SPELL,lambda card: card.attack,0,7))
+	result.extend(exfe_distri_general(deck,lambda card: card.type == md.Types.MINION,lambda card: card.health,0,7))
 	
 	return result
 	 
@@ -130,6 +140,24 @@ def load_dataset():
 
 	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards))
 	
+def writeDeckListToCSV(classeName,deckList, deckClass):
+	with open(classeName+'.csv', 'wb') as csvfile:
+		spamwriter = csv.writer(csvfile, quotechar=';',quoting=csv.QUOTE_MINIMAL)
+		spamwriter.writerow(['class','classeWoW','mana -3 -6 7+', 'health -3 -6 7+', 'attack -3 -6 7+', 'typeDistri-MSW']+["card #"+str(x) for x in range(1,31)])
+		for deck,classe in zip(deckList,deckClass):
+			l = [c.name for c in deck.cardsList]
+			typeDistri = " ".join("%.4f" % d for d in exfe_types(deck))
+			rangeDistri = exfe_distri_range(deck)
+			
+			manaDistri = " ".join("%.4f" % d for d in rangeDistri[0:3])
+			attackDistri = " ".join("%.4f" % d for d in rangeDistri[3:6])
+			healthDistri = " ".join("%.4f" % d for d in rangeDistri[6:9])
+			spamwriter.writerow(['',md.Classes.NAMES[str(deck.klass)],manaDistri,healthDistri, attackDistri,typeDistri]+l)
+	
 #DEBUG
 if __name__ == "__main__":
-	print load_dataset()[400]
+	with dao.Dao() as da:
+		cards = da.cards
+		decks = da.decks
+		
+	writeDeckListToCSV("classeTest",decks,range(len(decks)))

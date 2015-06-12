@@ -2,6 +2,10 @@ class Types:
   MINION = 1
   SPELL  = 2
   WEAPON = 3
+  
+  NAMES = {'1':'MINION',
+  				 '2':'SPELL',
+  				 '3':'WEAPON',}
     
 class Mechanics:
 	TAUNT = 1
@@ -43,6 +47,16 @@ class Classes:
 	SHAMAN = 7
 	WARLOCK = 8
 	WARRIOR = 9
+	
+	NAMES = {'1':'DRUIDE',
+					 '2':'HUNTER',
+					 '3':'MAGE',
+					 '4':'PALADIN',
+					 '5':'PRIEST',
+					 '6':'ROGUE',
+					 '7':'SHAMAN',
+					 '8':'WARLOCK',
+					 '9':'WARRIOR',}
 
 class Modes:
 	ARENA = 1
