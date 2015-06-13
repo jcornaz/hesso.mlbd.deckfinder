@@ -152,12 +152,13 @@ def writeDeckListToCSV(classeName,deckList, deckClass):
 			manaDistri = " ".join("%.4f" % d for d in rangeDistri[0:3])
 			attackDistri = " ".join("%.4f" % d for d in rangeDistri[3:6])
 			healthDistri = " ".join("%.4f" % d for d in rangeDistri[6:9])
-			spamwriter.writerow(['',md.Classes.NAMES[str(deck.klass)],manaDistri,healthDistri, attackDistri,typeDistri]+l)
+			spamwriter.writerow(['',md.Classes.NAMES[deck.klass],manaDistri,healthDistri, attackDistri,typeDistri]+l)
 	
 #DEBUG
 if __name__ == "__main__":
 	with dao.Dao() as da:
 		cards = da.cards
 		decks = da.decks
+		
 		
 	writeDeckListToCSV("classeTest",decks,range(len(decks)))
