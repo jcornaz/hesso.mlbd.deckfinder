@@ -24,6 +24,7 @@ def read_args(args=[]):
 	file_name = 'dbscan_result.dat'
 	epsvalue = 0.5
 	subset_size = sys.maxint
+	withComp = False
 	
 	if len(args) > 0:
 		if args[0].lower() == 'analyse':
@@ -40,18 +41,26 @@ def read_args(args=[]):
 				if len(args) > 3:
 					if args[3].lower() != "all":					
 						subset_size = int(args[3])
+					
+					if len(args) > 4:
+						if args[4].lower() == "true" or args[4] == "1" or args[4] == "yes":
+							withComp = True
+						elif args[4].lower() == "false" or args[4] == "0" or args[4] == "no":
+							withComp = False
+						else:
+							raise ValueError("unknown boolean : " + args[4])
 	
-	return operation, file_name, epsvalue, subset_size
+	return operation, file_name, epsvalue, subset_size, withComp
 	
 def main(args=[]):
 	"""
 	Run the dbscan algorithm
 	@param args [operation=(learn|analyse), file_name=../data/dbscan_result.dat, startEpsValue=0.5, randomSubsetSize=all]
 	"""
-	operation, file_name, epsvalue, subset_size = read_args(args)
+	operation, file_name, epsvalue, subset_size, withComp = read_args(args)
 	
 	if operation == Operation.LEARN:
-		dataset = features.load_dataset();
+		dataset = features.load_dataset(withComp=withComp);
 		if subset_size < sys.maxint:
 			dataset = utils.random_subset(dataset,subset_size)
 	
