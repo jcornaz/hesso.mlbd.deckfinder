@@ -118,7 +118,7 @@ def exfe_deck(deck,comp=None):
 		
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
-	result.extend(exfe_distri(deck))
+	#result.extend(exfe_distri(deck))
 	result.extend(exfe_distri_range(deck))
 	#result.extend(exfe_winrates(deck))
 	
@@ -137,10 +137,15 @@ def exfe_decks(decks,cards,withComp=False):
 	
 	return np.array(results)
 	
-def load_dataset(withComp=False):
-	with dao.Dao() as da:
-		cards = da.cards
-		decks = da.decks
+def load_dataset(decks=None, cards=None, withComp=False):
+	
+	if decks is None or cards is None:
+		with dao.Dao() as da:
+			if cards is None:
+				cards = da.cards
+				
+			if decks is None:
+				decks = da.decks
 
 	print "extracting features..."
 	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards, withComp))

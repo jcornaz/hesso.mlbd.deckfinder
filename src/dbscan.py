@@ -16,8 +16,8 @@ def clusters(db):
 	core_samples_mask[db.core_sample_indices_] = True
 	return set(labels), core_samples_mask
 	
-def learn(dataset,epsvalue):
-	return DBSCAN(eps=epsvalue,min_samples=10,metric=cosine_distances,algorithm='ball_tree').fit(dataset)
+def learn(dataset,epsvalue,min_samples=10):
+	return DBSCAN(eps=epsvalue,min_samples=min_samples,metric=cosine_distances,algorithm='ball_tree').fit(dataset)
 
 def read_args(args=[]):
 	operation = Operation.LEARN
