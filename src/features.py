@@ -118,7 +118,7 @@ def exfe_deck(deck,comp=None):
 		
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
-	result.extend(exfe_distri(deck))
+	#result.extend(exfe_distri(deck))
 	result.extend(exfe_distri_range(deck))
 	#result.extend(exfe_winrates(deck))
 	
@@ -137,16 +137,21 @@ def exfe_decks(decks,cards,withComp=False):
 	
 	return np.array(results)
 	
-def load_dataset(withComp=False):
-	with dao.Dao() as da:
-		cards = da.cards
-		decks = da.decks
+def load_dataset(decks=None, cards=None, withComp=False):
+	
+	if decks is None or cards is None:
+		with dao.Dao() as da:
+			if cards is None:
+				cards = da.cards
+				
+			if decks is None:
+				decks = da.decks
 
 	print "extracting features..."
 	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards, withComp))
 	
-def writeDeckListToCSV(classeName,deckList, deckClass):
-	with open(classeName+'.csv', 'wb') as csvfile:
+def writeDeckListToCSV(filePath,deckList, deckClass):
+	with open(filePath+'.csv', 'wb') as csvfile:
 		spamwriter = csv.writer(csvfile, quotechar=';',quoting=csv.QUOTE_MINIMAL)
 		spamwriter.writerow(['class','classeWoW','mana -3 -6 7+', 'health -3 -6 7+', 'attack -3 -6 7+', 'typeDistri-MSW']+["card #"+str(x) for x in range(1,31)])
 		for deck,classe in zip(deckList,deckClass):
@@ -157,15 +162,12 @@ def writeDeckListToCSV(classeName,deckList, deckClass):
 			manaDistri = " ".join("%.4f" % d for d in rangeDistri[0:3])
 			attackDistri = " ".join("%.4f" % d for d in rangeDistri[3:6])
 			healthDistri = " ".join("%.4f" % d for d in rangeDistri[6:9])
-			spamwriter.writerow([classe,md.Classes.NAMES[str(deck.klass)],manaDistri,healthDistri, attackDistri,typeDistri]+l)
+			spamwriter.writerow([classe,md.Classes.NAMES[deck.klass],manaDistri,healthDistri, attackDistri,typeDistri]+l)
 	
 #DEBUG
 if __name__ == "__main__":
 	with dao.Dao() as da:
 		cards = da.cards
 		decks = da.decks
-	
-	dataset = load_dataset()
-	print dataset[42]
-	
+
 	writeDeckListToCSV("classeTest",decks,range(len(decks)))

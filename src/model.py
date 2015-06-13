@@ -42,15 +42,15 @@ class Classes:
 	WARLOCK = 8
 	WARRIOR = 9
 	
-	NAMES = {'1':'DRUIDE',
-					 '2':'HUNTER',
-					 '3':'MAGE',
-					 '4':'PALADIN',
-					 '5':'PRIEST',
-					 '6':'ROGUE',
-					 '7':'SHAMAN',
-					 '8':'WARLOCK',
-					 '9':'WARRIOR',}
+	NAMES = {1:'DRUIDE',
+					 2:'HUNTER',
+					 3:'MAGE',
+					 4:'PALADIN',
+					 5:'PRIEST',
+					 6:'ROGUE',
+					 7:'SHAMAN',
+					 8:'WARLOCK',
+					 9:'WARRIOR',}
 
 class Modes:
 	ARENA = 1
