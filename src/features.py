@@ -140,8 +140,8 @@ def load_dataset():
 
 	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards))
 	
-def writeDeckListToCSV(classeName,deckList, deckClass):
-	with open(classeName+'.csv', 'wb') as csvfile:
+def writeDeckListToCSV(filePath,deckList, deckClass):
+	with open(filePath+'.csv', 'wb') as csvfile:
 		spamwriter = csv.writer(csvfile, quotechar=';',quoting=csv.QUOTE_MINIMAL)
 		spamwriter.writerow(['class','classeWoW','mana -3 -6 7+', 'health -3 -6 7+', 'attack -3 -6 7+', 'typeDistri-MSW']+["card #"+str(x) for x in range(1,31)])
 		for deck,classe in zip(deckList,deckClass):
@@ -161,4 +161,4 @@ if __name__ == "__main__":
 		decks = da.decks
 		
 		
-	writeDeckListToCSV("classeTest",decks,range(len(decks)))
+	writeDeckListToCSV("../data/classeTest",decks,range(len(decks)))
