@@ -3,7 +3,6 @@ import numpy as np
 import model as md
 import dao
 import csv
-import random
 from model import Mechanics
 
 class Composition:
@@ -111,10 +110,12 @@ def exfe_winrates(deck):
 	#result.append(deck.arenaWinRate)
 	return result
 	
-def exfe_deck(deck,comp):
+def exfe_deck(deck,comp=None):
 	result = []
 	
-	result.extend(comp.exfe(deck))
+	if comp != None:
+		result.extend(comp.exfe(deck))
+		
 	result.extend(exfe_mechanics(deck))
 	result.extend(exfe_types(deck))
 	result.extend(exfe_distri(deck))
@@ -123,21 +124,26 @@ def exfe_deck(deck,comp):
 	
 	return result
 
-def exfe_decks(decks,cards):
+def exfe_decks(decks,cards,withComp=False):
 	results = []
 	
-	comp = Composition(cards)
+	if withComp:
+		comp = Composition(cards)
+	else:
+		comp = None
+		
 	for deck in decks:
 		results.append(exfe_deck(deck,comp))
 	
 	return np.array(results)
 	
-def load_dataset():
+def load_dataset(withComp=False):
 	with dao.Dao() as da:
 		cards = da.cards
 		decks = da.decks
 
-	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards))
+	print "extracting features..."
+	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards, withComp))
 	
 def writeDeckListToCSV(classeName,deckList, deckClass):
 	with open(classeName+'.csv', 'wb') as csvfile:
@@ -158,5 +164,8 @@ if __name__ == "__main__":
 	with dao.Dao() as da:
 		cards = da.cards
 		decks = da.decks
-		
+	
+	dataset = load_dataset()
+	print dataset[42]
+	
 	writeDeckListToCSV("classeTest",decks,range(len(decks)))
