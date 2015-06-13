@@ -25,8 +25,7 @@ class Composition:
 def normalize(values,vmin,vmax):
 	return [max(0,min(1,float(value-vmin)/float(vmax-vmin))) for value in values]
 	
-#TODO add more mechanics
-MECHANICS = [Mechanics.TAUNT, Mechanics.ONETURNEFFECT, Mechanics.MORPH, Mechanics.COMBO, Mechanics.SUMMON, Mechanics.SECRET, Mechanics.CHARGE]
+MECHANICS = [Mechanics.TAUNT, Mechanics.COMBO, Mechanics.SECRET, Mechanics.CHARGE, Mechanics.FREEZE, Mechanics.SPELLPOWER, Mechanics.DIVINESHIELD, Mechanics.WINDFURY , Mechanics.ENRAGE , Mechanics.SILENCE]
 def exfe_mechanics(deck):
 	
 	result = [0] * len(MECHANICS)
