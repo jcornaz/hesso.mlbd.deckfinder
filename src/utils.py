@@ -1,5 +1,6 @@
 import random as rnd
 import numpy as np
+from time import gmtime, strftime
 
 def dictValues(dictionnary):
 	return [dictionnary[k] for k in dictionnary.keys()]
@@ -20,3 +21,6 @@ def random_subset( matrix, n ):
 	
 	return res
 			
+			
+def printTime(prefix):
+	print (strftime("%H:%M:%S %d-%m-%Y", gmtime())+" "+prefix)
