@@ -2,7 +2,6 @@
 import numpy as np
 import model as md
 import dao
-import csv
 from model import Mechanics
 
 class Composition:
@@ -150,24 +149,6 @@ def load_dataset(decks=None, cards=None, withComp=False):
 	print "extracting features..."
 	return np.array(exfe_decks(filter(lambda deck: deck.isValidConstructed, decks), cards, withComp))
 	
-def writeDeckListToCSV(filePath,deckList, deckClass):
-	with open(filePath+'.csv', 'wb') as csvfile:
-		spamwriter = csv.writer(csvfile, quotechar=';',quoting=csv.QUOTE_MINIMAL)
-		spamwriter.writerow(['class','classeWoW','mana -3 -6 7+', 'health -3 -6 7+', 'attack -3 -6 7+', 'typeDistri-MSW']+["card #"+str(x) for x in range(1,31)])
-		for deck,classe in zip(deckList,deckClass):
-			l = [c.name for c in deck.cardsList]
-			typeDistri = " ".join("%.4f" % d for d in exfe_types(deck))
-			rangeDistri = exfe_distri_range(deck)
-			
-			manaDistri = " ".join("%.4f" % d for d in rangeDistri[0:3])
-			attackDistri = " ".join("%.4f" % d for d in rangeDistri[3:6])
-			healthDistri = " ".join("%.4f" % d for d in rangeDistri[6:9])
-			spamwriter.writerow([classe,md.Classes.NAMES[deck.klass],manaDistri,healthDistri, attackDistri,typeDistri]+l)
-	
 #DEBUG
 if __name__ == "__main__":
-	with dao.Dao() as da:
-		cards = da.cards
-		decks = da.decks
-
-	writeDeckListToCSV("classeTest",decks,range(len(decks)))
+	print load_dataset()[42]
