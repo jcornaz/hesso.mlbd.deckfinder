@@ -2,6 +2,7 @@ from sklearn.cluster import DBSCAN
 from sklearn.metrics.pairwise import cosine_distances
 import features
 import numpy as np
+import dao
 import utils
 import sys
 import pickle
@@ -51,6 +52,14 @@ def read_args(args=[]):
 							raise ValueError("unknown boolean : " + args[4])
 	
 	return operation, file_name, epsvalue, subset_size, withComp
+
+def load(file_name):
+	print "loading result from " + file_name
+	
+	with open(file_name, 'r') as file:
+		[db, decks] = pickle.load(file)
+		
+	return db, decks
 	
 def main(args=[]):
 	"""
@@ -60,9 +69,13 @@ def main(args=[]):
 	operation, file_name, epsvalue, subset_size, withComp = read_args(args)
 	
 	if operation == Operation.LEARN:
-		dataset = features.load_dataset(withComp=withComp);
+		with dao.Dao() as da:
+			decks = da.decks
+			
 		if subset_size < sys.maxint:
-			dataset = utils.random_subset(dataset,subset_size)
+			decks = utils.random_sublist(decks,subset_size)
+			
+		dataset = features.load_dataset(decks=decks,withComp=withComp);
 	
 		print 'learning with eps=' + str(epsvalue) + '...'
 		db = learn(dataset, epsvalue)
@@ -76,11 +89,9 @@ def main(args=[]):
 		print str(len(labels)) + " clusters founds"
 		print "dumping result in " + file_name
 		with open(file_name,'w') as file:
-			pickle.dump(db, file, pickle.HIGHEST_PROTOCOL)
+			pickle.dump([db,decks], file, pickle.HIGHEST_PROTOCOL)
 	else:
-		print "loading result from " + file_name
-		with open(file_name, 'r') as file:
-			db = pickle.load(file)
+		db, decks = load(file_name)
 		
 		labels, mask = clusters(db)
 		print "mask : " + str(mask)
