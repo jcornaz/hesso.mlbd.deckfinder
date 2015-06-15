@@ -154,14 +154,14 @@ class Deck:
 	@property
 	def constructedWinRate(self):
 		if self.nbConstructedMatches > 0:
-			return self.nbConstructedWins / self.nbConstructedMatches
+			return float(self.nbConstructedWins) / float(self.nbConstructedMatches)
 		else:
 			return float('nan')
 	
 	@property
 	def arenaWinRate(self):
 		if self.nbArenaMatches > 0:
-			return self.nbArenaWins / self.nbArenaMatches
+			return float(self.nbArenaWins) / float(self.nbArenaMatches)
 		else:
 			return float('nan')
 	
