@@ -19,11 +19,10 @@ def writeDeckListToCSV(filePath,deckList, deckClasses):
 			spamwriter.writerow([classe,md.Classes.NAMES[deck.klass],manaDistri,healthDistri, attackDistri,typeDistri]+l)
 			
 def writeDeckPrototypeToCSV(filePath, deckList, deckClasses):
-	classSet = set(deckClasses)
-	features = f.exfe_decks(deckList,True)
+	classSet = list(set(deckClasses))
+	features = f.load_dataset(decks=deckList,withComp=True)
 	nb_samples, nb_features = features.shape
-	
-	prototypes = np.zeros(nb_features,len(classSet))
+	prototypes = np.zeros([nb_features,len(classSet)])
 	winRates = {}
 	matches = {}
 	
@@ -31,11 +30,15 @@ def writeDeckPrototypeToCSV(filePath, deckList, deckClasses):
 		indexes = filter(lambda index: deckClasses[index] == classSet[i], range(nb_samples))
 		for j in range(nb_features):
 			prototypes[j,i] = np.mean(features[indexes,j])
-			winRates[classSet[i]] = [deck.constructedWinRate for deck in decks[indexes]]
-			matches[classSet[i]] = [deck.nbConstructedMatches for deck in decks[indexes]]
+			winRates[classSet[i]] = np.mean([deckList[k].constructedWinRate for k in indexes])
+			matches[classSet[i]] = np.mean([deckList[k].nbConstructedMatches for k in indexes])
 			
 	with open(filePath + '.csv', 'wb' ) as csvfile:
 		spamwriter = csv.writer(csvfile, quotechar=';',quoting=csv.QUOTE_MINIMAL)
+		
+		spamwriter.writerow(map(lambda c: winRates[c], classSet))
+		spamwriter.writerow(map(lambda c: matches[c], classSet))
+		
 		for i in range(nb_features):
 			spamwriter.writerow(prototypes[i,:])
 		

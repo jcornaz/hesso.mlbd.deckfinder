@@ -18,7 +18,7 @@ class Composition:
 			except ValueError:
 				print "ERROR: card " + str(card.id) + " not found in the list (" + ', '.join(map(str,self.keys)) + ")"
 				
-		return res
+		return res		
 	
 def normalize(values,vmin,vmax):
 	return [max(0,min(1,float(value-vmin)/float(vmax-vmin))) for value in values]
@@ -135,6 +135,15 @@ def exfe_decks(decks,cards,withComp=False):
 		results.append(exfe_deck(deck,comp))
 	
 	return np.array(results)
+
+def feature_list(cards):
+	comp = Composition(cards)
+	cardNames = {}
+	for card in cards:
+		cardNames[card.id] = card.name
+	
+	return [cardNames[key] for key in comp.keys]
+	
 	
 def load_dataset(decks=None, cards=None, withComp=False):
 	
