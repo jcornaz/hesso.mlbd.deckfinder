@@ -21,7 +21,7 @@ class Composition:
 		return res		
 	
 def normalize(values,vmin,vmax):
-	return [max(0,min(1,float(value-vmin)/float(vmax-vmin))) for value in values]
+	return [max(0.0,min(1.0,float(value-vmin)/float(vmax-vmin))) for value in values]
 	
 MECHANICS = [Mechanics.TAUNT, Mechanics.COMBO, Mechanics.SECRET, Mechanics.CHARGE, Mechanics.FREEZE, Mechanics.SPELLPOWER, Mechanics.DIVINESHIELD, Mechanics.WINDFURY , Mechanics.ENRAGE , Mechanics.SILENCE]
 def exfe_mechanics(deck):
@@ -109,6 +109,15 @@ def exfe_winrates(deck):
 	#result.append(deck.arenaWinRate)
 	return result
 	
+def exfe_deck_gng(deck):
+	result = []
+		
+	result.extend(exfe_mechanics(deck))
+	result.extend(exfe_types(deck))
+	exfe_distri_range(deck)
+	#result.extend(exfe_count_range(deck,lambda card: True,lambda card: card.manacost,[3,6]))
+	return result
+	
 def exfe_deck(deck,comp=None):
 	result = []
 	
@@ -122,6 +131,14 @@ def exfe_deck(deck,comp=None):
 	#result.extend(exfe_winrates(deck))
 	
 	return result
+
+def exfe_decks_gng(decks,cards):
+	results = []
+		
+	for deck in decks:
+		results.append(exfe_deck_gng(deck))
+		
+	return np.array(results)
 
 def exfe_decks(decks,cards,withComp=False):
 	results = []
@@ -143,7 +160,14 @@ def feature_list(cards):
 		cardNames[card.id] = card.name
 	
 	return [cardNames[key] for key in comp.keys]
-	
+
+def load_dataset_gng():
+	with dao.Dao() as da:
+		cards = da.cards
+		decks = da.decks
+
+	print "extracting features..."
+	return np.array(exfe_decks_gng(filter(lambda deck: deck.isValidConstructed, decks), cards))
 	
 def load_dataset(decks=None, cards=None, withComp=False):
 	
