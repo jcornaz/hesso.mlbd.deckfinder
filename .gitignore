@@ -15,6 +15,11 @@
 *.dat
 data/
 
+# Delivrables
+results/
+*.pdf
+*.docx
+
 # linux hidden files
 .*
 !.gitignore
