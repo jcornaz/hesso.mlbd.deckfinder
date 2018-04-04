@@ -1,13 +1,13 @@
 # Hearthstone deck prototype discovering
-## Introduction
-This is a unsupervised machine learning project about matches statistics on the video game [Hearthstone: Heroes of Warcraft](http://en.wikipedia.org/wiki/Hearthstone:_Heroes_of_Warcraft)
+Unsupervised machine learning project about match statistics of the video game: [Hearthstone: Heroes of Warcraft](http://en.wikipedia.org/wiki/Hearthstone:_Heroes_of_Warcraft)
 
-## Goal
-The goal is discovering decks groups and find which are better than others.
+The goal is discovering decks groups and find which ones are better than others.
 
-## Context
-This is a mini-project for the "Machine Learning on Big Data" course of the HES-SO university (Switzerland).
+## Status
+This was a school project. It is no longer maintained and no support will ever be provided.
 
-The start date is : 12.05.2015
+The project is available to anyone interested by studying, modifing or using it. However, be aware that it might contains bugs or errors, and some resources might be missing (data or credentials).
 
-The due date is : 16.06.2015
+Please note that the language and technologies might have been new for the contributors when developping the project. Time frame and project requirement are also very different than most *real-world* project. 
+
+**Coding style is not representative of current style of the contributors**
